@@ -509,7 +509,9 @@ return {
     "m4xshen/hardtime.nvim",
     event = "InsertEnter",
     dependencies = { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim" },
-    opts = {},
+    opts = {
+      enabled = false,
+    },
   },
 
   -- 24. A better annotation generator. Supports multiple languages and annotation conventions.
