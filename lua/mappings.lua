@@ -1,0 +1,95 @@
+require "nvchad.mappings"
+
+-- add yours here
+
+local map = vim.keymap.set
+
+map("n", ";", ":", { desc = "CMD enter command mode" })
+map("i", "jk", "<ESC>")
+
+-- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
+
+-- telescope related keymap settings
+map("n", "<leader>tz", ":Telescope zoxide <CR>", { desc = "Open zoxide list panel" })
+map(
+  "n",
+  "<leader>fg",
+  ":lua require('telescope').extensions.live_grep_args.live_grep_args() <CR>",
+  { desc = "Grep by telescope rg extension." }
+)
+map("n", "<leader>te", ":Telescope <CR>", { desc = "Open Telescope" })
+map("n", "<leader>fl", ":FzfLua <CR>", { desc = "Open fzf-lua commands list" })
+map("n", "<leader>tf", ":Telescope frecency <CR>", { desc = "Use frecency to find files" })
+map(
+  "n",
+  "<leader>td",
+  ":lua require('telescope').extensions.diff.diff_files({hidden=true}) <CR>",
+  { desc = "Diff files" }
+)
+map(
+  "n",
+  "<leader>tg",
+  ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>",
+  { desc = "use rg extension for live grep" }
+)
+map(
+  "n",
+  "<leader>tc",
+  ":lua require('telescope-live-grep-args.shortcuts').grep_word_under_cursor()<CR>",
+  { desc = "Use rg extension for strings under cursor" }
+)
+map(
+  "n",
+  "<leader>tb",
+  ":lua require('telescope.builtin').live_grep{ search_dirs={'%:p'} } <CR>",
+  { desc = "search current buffer only" }
+)
+map(
+  "n",
+  "<leader>tp",
+  ":lua require('telescope.builtin').live_grep{ search_dirs={'%:p:h'} } <CR>",
+  { desc = "search folders of current buffer only" }
+)
+
+-- Some keymaps for better experience
+-- map("n", "<leader>cl", ":Calendar -view=year -position=left <CR>", { desc = "Display Calendar" })
+map("n", "<leader>cy", ":Calendar -view=year -week_number <CR>", { desc = "Display Yearly Calendar" })
+map("n", "<leader>tn", ":Nerdy <CR>", { desc = "Insert icons from Nerd fonts" })
+-- map("n", "zR", require("ufo").openAllFolds)
+map("n", "<leader>to", function()
+  vim.opt.scrolloff = 999 - vim.o.scrolloff
+end, { desc = "Always in center of screen" })
+map("n", "]g", ":lua vim.diagnostic.goto_next()<CR>", { desc = "Go to next message" })
+map("n", "[g", ":lua vim.diagnostic.goto_prev()<CR>", { desc = "Go to previous message" })
+map("n", "<leader>gg", ":GrugFar<CR>", { desc = "use grug-far to search and replace" })
+map("n", "<C-p>", "<Cmd>BufferPick<CR>", { desc = "switch to buffer" })
+map("n", "<leader>?", ":Cheatsheet<CR>", { desc = "open cheatsheet for reference" })
+
+-- DAP keymap settings
+map("n", "<leader>dd", ":lua require('dapui').toggle()<CR>", { desc = "Toggle Dap UI" })
+map("n", "<F5>", ":lua require('dap').continue()<CR>", { desc = "Continue Dap" })
+map("n", "<leader>B", ":lua require('dap').toggle_breakpoint()<CR>", { desc = "Toggle Breakpoint" })
+map("n", "<F10>", function()
+  require("dap").step_over()
+end, { desc = "Dap step over" })
+map("n", "<F11>", function()
+  require("dap").step_into()
+end, { desc = "Dap step into" })
+map("n", "<F12>", function()
+  require("dap").step_out()
+end, { desc = "Dap step out" })
+map("n", "<F4>", function()
+  require("dap").close()
+end, { desc = "Dap close and out" })
+
+-- Lint settings
+map("n", "<leader>fn", ":lua require('lint').try_lint()<CR>", { desc = "Lint current buffer" })
+
+-- LSPSage settings
+map("n", "<leader>sf", ":Lspsaga finder<CR>", { desc = "Use LSPSage to find word under cursor" })
+map("n", "<leader>sd", ":Lspsaga hover_doc<CR>", { desc = "Use LSPSage to check documentation under cursor" })
+
+-- LSP related
+map("n", "<leader>ct", function()
+  require("tiny-code-action").code_action()
+end, { desc = "Code Action" })
