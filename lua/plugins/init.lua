@@ -37,7 +37,7 @@ return {
   {
     "williamboman/mason.nvim",
     opts = {
-      ensure_installed = {
+      pkgs = {
         "lua-language-server",
         "stylua",
         -- "html-lsp",
@@ -945,6 +945,15 @@ return {
     config = function()
       require("tiny-code-action").setup()
     end,
+  },
+
+  -- 50. Syntax aware text-objects, select, move, swap, and peek support.
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    event = "BufReadPre",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+    },
   },
 
   -- Backup plugins

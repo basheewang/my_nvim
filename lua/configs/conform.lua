@@ -8,6 +8,7 @@ local options = {
     cmake = { "gersemi" },
     tex = { "latexindent" },
     json = { "jq" },
+    yaml = { "yamlfmt" },
   },
 
   -- format_on_save = {
