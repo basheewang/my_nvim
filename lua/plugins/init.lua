@@ -5,59 +5,14 @@ return {
     opts = require "configs.conform",
   },
 
-  {
-    "mfussenegger/nvim-lint",
-    event = "LspAttach",
-    config = function()
-      require("lint").linters_by_ft = {
-        cmake = { "cmakelint" },
-      }
-    end,
-  },
-
   -- These are some examples, uncomment them if you want to see them work!
   {
     "neovim/nvim-lspconfig",
-    dependencies = {
-      {
-        -- A simple popup display that provides breadcrumbs feature using LSP server
-        "SmiteshP/nvim-navbuddy",
-        dependencies = {
-          "SmiteshP/nvim-navic",
-          "MunifTanjim/nui.nvim",
-        },
-        opts = { lsp = { auto_attach = true } },
-      },
-    },
     config = function()
       require "configs.lspconfig"
     end,
   },
 
-  {
-    "williamboman/mason.nvim",
-    opts = {
-      pkgs = {
-        "lua-language-server",
-        "stylua",
-        -- "html-lsp",
-        -- "css-lsp",
-        "prettier",
-        "texlab",
-        "pyright",
-        "black",
-        -- "clangd",
-        -- "clang-format",
-        "cmake-language-server",
-        "gersemi",
-        "latexindent",
-        "jq",
-        "taplo",
-        "rust-analyzer",
-        "rustfmt",
-      },
-    },
-  },
   {
     "nvim-treesitter/nvim-treesitter",
     opts = {
@@ -66,22 +21,25 @@ return {
         "lua",
         "vimdoc",
         "regex",
+        "rust",
         -- "html", "css"
       },
     },
   },
 
-  -- Customized plugins
-
-  -- {
-  --   "max397574/better-escape.nvim",
-  --   event = "InsertEnter",
-  --   config = function()
-  --     require("better_escape").setup()
-  --   end,
-  -- },
+  -- below is plugins added by myself
 
   -- 1. Surround selections, stylishly 😎
+  -- some usage:
+  --     Old text                    Command         New text
+  --------------------------------------------------------------------------------
+  --     surr*ound_words             ysiw)           (surround_words)
+  --     *make strings               ys$"            "make strings"
+  --     [delete ar*ound me!]        ds]             delete around me!
+  --     remove <b>HTML t*ags</b>    dst             remove HTML tags
+  --     'change quot*es'            cs'"            "change quotes"
+  --     <b>or tag* types</b>        csth1<CR>       <h1>or tag types</h1>
+  --     delete(functi*on calls)     dsf             function calls
   {
     "kylechui/nvim-surround",
     version = "*", -- Use for stability; omit to use `main` branch for the latest features
@@ -420,13 +378,13 @@ return {
   },
 
   -- 15. Leap is a general-purpose motion plugin for Neovim
-  {
-    "ggandor/leap.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("leap").add_default_mappings()
-    end,
-  },
+  -- {
+  --   "ggandor/leap.nvim",
+  --   event = "VeryLazy",
+  --   config = function()
+  --     require("leap").add_default_mappings()
+  --   end,
+  -- },
 
   -- 16. Extensible UI for Neovim notifications and LSP progress messages.
   {
@@ -471,6 +429,15 @@ return {
           require("treesitter-context").go_to_context()
         end,
       },
+    },
+  },
+
+  -- 50. Syntax aware text-objects, select, move, swap, and peek support.
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    event = "BufReadPre",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
     },
   },
 
@@ -552,7 +519,7 @@ return {
   -- 27. codeium
   {
     "Exafunction/codeium.nvim",
-    event = "LspAttach",
+    -- event = "LspAttach",
     dependencies = {
       "nvim-lua/plenary.nvim",
       -- "hrsh7th/nvim-cmp",
@@ -576,20 +543,6 @@ return {
       require("codeium").setup {
         enable_chat = false,
       }
-    end,
-  },
-
-  -- 29. A Neovim fuzzy finder that updates on every keystroke.
-  {
-    "linrongbin16/fzfx.nvim",
-    event = "BufReadPre",
-    dependencies = { "nvim-tree/nvim-web-devicons", "junegunn/fzf" },
-
-    -- specify version to avoid break changes
-    -- version = "v5.*",
-
-    config = function()
-      require("fzfx").setup()
     end,
   },
 
@@ -830,36 +783,37 @@ return {
     -- version = '^1.0.0', -- optional: only update when a new 1.x version is released
   },
 
-  --44. nvim-cmp setup
-  {
-    "hrsh7th/nvim-cmp",
-    event = "InsertEnter",
-    dependencies = {
-      "hrsh7th/cmp-cmdline",
-    },
-    config = function()
-      local cmp = require "cmp"
-      cmp.setup.cmdline(":", {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources({
-          { name = "path" },
-        }, {
-          {
-            name = "cmdline",
-            option = {
-              ignore_cmds = { "Man", "!" },
-            },
-          },
-        }),
-      })
-      cmp.setup.cmdline("/", {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = {
-          { name = "buffer" },
-        },
-      })
-    end,
-  },
+  -- 44. nvim-cmp setup
+  -- Not works! Check later.
+  -- {
+  --   "hrsh7th/nvim-cmp",
+  --   event = "InsertEnter",
+  --   dependencies = {
+  --     "hrsh7th/cmp-cmdline",
+  --   },
+  --   config = function()
+  --     local cmp = require "cmp"
+  --     cmp.setup.cmdline(":", {
+  --       mapping = cmp.mapping.preset.cmdline(),
+  --       sources = cmp.config.sources({
+  --         { name = "path" },
+  --       }, {
+  --         {
+  --           name = "cmdline",
+  --           option = {
+  --             ignore_cmds = { "Man", "!" },
+  --           },
+  --         },
+  --       }),
+  --     })
+  --     cmp.setup.cmdline("/", {
+  --       mapping = cmp.mapping.preset.cmdline(),
+  --       sources = {
+  --         { name = "buffer" },
+  --       },
+  --     })
+  --   end,
+  -- },
 
   -- 45. A cheatsheet plugin for neovim with bundled cheatsheets
   {
@@ -920,21 +874,21 @@ return {
     },
   },
 
-  -- 48. Mini icons
-  {
-    "echasnovski/mini.icons",
-    opts = {},
-    lazy = true,
-    specs = {
-      { "nvim-tree/nvim-web-devicons", enabled = false, optional = true },
-    },
-    init = function()
-      package.preload["nvim-web-devicons"] = function()
-        require("mini.icons").mock_nvim_web_devicons()
-        return package.loaded["nvim-web-devicons"]
-      end
-    end,
-  },
+  -- 48. Mini icons: to use it instead of "nvim-web-devicons"
+  -- {
+  --   "echasnovski/mini.icons",
+  --   opts = {},
+  --   lazy = true,
+  --   specs = {
+  --     { "nvim-tree/nvim-web-devicons", enabled = false, optional = true },
+  --   },
+  --   init = function()
+  --     package.preload["nvim-web-devicons"] = function()
+  --       require("mini.icons").mock_nvim_web_devicons()
+  --       return package.loaded["nvim-web-devicons"]
+  --     end
+  --   end,
+  -- },
 
   -- 49. provides a simple way to run and visualize code actions with Telescope.
   {
@@ -947,15 +901,6 @@ return {
     config = function()
       require("tiny-code-action").setup()
     end,
-  },
-
-  -- 50. Syntax aware text-objects, select, move, swap, and peek support.
-  {
-    "nvim-treesitter/nvim-treesitter-textobjects",
-    event = "BufReadPre",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-    },
   },
 
   -- 51. Populate the quickfix with json entries
