@@ -53,6 +53,8 @@ return {
         "latexindent",
         "jq",
         "taplo",
+        "rust-analyzer",
+        "rustfmt",
       },
     },
   },
@@ -954,6 +956,13 @@ return {
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
     },
+  },
+
+  -- 51. Populate the quickfix with json entries
+  {
+    "gennaro-tedesco/nvim-jqx",
+    event = { "BufReadPost" },
+    ft = { "json", "yaml" },
   },
 
   -- Backup plugins

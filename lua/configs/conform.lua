@@ -9,6 +9,7 @@ local options = {
     tex = { "latexindent" },
     json = { "jq" },
     yaml = { "yamlfmt" },
+    rust = { "rustfmt", lsp_format = "fallback" },
   },
 
   -- format_on_save = {
