@@ -19,6 +19,12 @@ map(
 )
 map("n", "<leader>te", ":Telescope <CR>", { desc = "Open Telescope" })
 map("n", "<leader>fl", ":FzfLua <CR>", { desc = "Open fzf-lua commands list" })
+map(
+  "n",
+  "<leader>fc",
+  ":lua require('fzf-lua').oldfiles({cwd_only=true})<CR>",
+  { desc = "search old files under current folder" }
+)
 map("n", "<leader>tf", ":Telescope frecency <CR>", { desc = "Use frecency to find files" })
 map(
   "n",
