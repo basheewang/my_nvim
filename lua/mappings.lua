@@ -55,7 +55,7 @@ map(
 -- map("n", "<leader>cl", ":Calendar -view=year -position=left <CR>", { desc = "Display Calendar" })
 map("n", "<leader>cy", ":Calendar -view=year -week_number <CR>", { desc = "Display Yearly Calendar" })
 map("n", "<leader>tn", ":Nerdy <CR>", { desc = "Insert icons from Nerd fonts" })
--- map("n", "zR", require("ufo").openAllFolds)
+-- map("n", "z>", ":lua require('ufo').openAllFolds<CR>", { desc = "use ufo to open all folds" })
 map("n", "<leader>to", function()
   vim.opt.scrolloff = 999 - vim.o.scrolloff
 end, { desc = "Always in center of screen" })
@@ -86,10 +86,19 @@ end, { desc = "Dap close and out" })
 map("n", "<leader>fn", ":lua require('lint').try_lint()<CR>", { desc = "Lint current buffer" })
 
 -- LSPSage settings
-map("n", "<leader>sf", ":Lspsaga finder<CR>", { desc = "Use LSPSage to find word under cursor" })
-map("n", "<leader>sd", ":Lspsaga hover_doc<CR>", { desc = "Use LSPSage to check documentation under cursor" })
+map("n", "<leader>sf", ":Lspsaga finder<CR>", { desc = "Use LSPSaga to find word under cursor" })
+map("n", "<leader>sd", ":Lspsaga hover_doc<CR>", { desc = "Use LSPSaga to check documentation under cursor" })
+map("n", "<leader>sc", ":Lspsaga code_action<CR>", { desc = "Use LSPSaga for available code actions" })
 
 -- LSP related
 map("n", "<leader>ct", function()
   require("tiny-code-action").code_action()
 end, { desc = "Code Action" })
+
+-- SnipRun
+map("n", "<leader>sr", ":SnipRun<CR>", { desc = "Use SnipRun to run the code", silent = true })
+
+-- LSP signature
+map("n", "<leader>sk", function()
+  require("lsp_signature").toggle_float_win()
+end, { silent = true, noremap = true, desc = "toggle signature" })
