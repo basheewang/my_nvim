@@ -1106,10 +1106,11 @@ return {
   --        Can also be accessed directly through require('render-markdown').expand()
   --    :RenderMarkdown contract - Decrease anti-conceal margin above and below by 1
   --        Can also be accessed directly through require('render-markdown').contract()
+  -- Also checl: https://github.com/OXY2DEV/markview.nvim -> An experimental markdown previewer for Neovim
   {
-    "MeanderingProgrammer/markdown.nvim",
+    "MeanderingProgrammer/render-markdown.nvim",
     event = "InsertEnter",
-    name = "render-markdown", -- Only needed if you have another plugin named markdown.nvim
+    opts = {},
     dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
     -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
     -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
@@ -1424,6 +1425,39 @@ return {
     event = { "BufReadPost" },
     ft = { "json", "yaml" },
   },
+
+  -- 52. Decorations for vimdoc/help files in Neovim
+  -- The plugin comes with the Helpview command. It has the following sub-commands,
+  -- toggleAll -> Toggles the plugin itself.
+  -- enableAll -> Enables the plugin.
+  -- disableAll -> Disables the plugin
+  -- toggle {buffer} -> Toggles the plugin on the specific buffer.
+  -- enable {buffer} -> Enables the plugin on the specific buffer.
+  -- disable {buffer} -> Disables the plugin on the specific buffer.
+  -- Check out the help files(via :h helpview.nvim) to learn more!
+  -- NOTE: It looks this will change colortheme a lot! Use Lazy load until invoke "help" command.
+  {
+    "OXY2DEV/helpview.nvim",
+    -- lazy = false, -- Recommended
+
+    -- In case you still want to lazy load
+    ft = "help",
+
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+    },
+  },
+
+  -- 53. vim-doge: (Do)cumentation (Ge)nerator for nearly 20 languages 📚 Generate proper code documentation with a single keypress. ⚡️🔥
+  -- Run :help doge to get the full help page.
+  -- Commands
+  --    :DogeGenerate {doc_standard}
+  -- Command to generate documentation. The {doc_standard} accepts a count or a string as argument, and it can complete the available doc standards for the current buffer.
+  -- TODO: Don't know how to use it. Will check back.
+  -- {
+  --   "kkoomen/vim-doge",
+  --   event = "LspAttach",
+  -- },
 
   -- Backup plugins
   -- 1. lspkind: https://github.com/onsails/lspkind.nvim
