@@ -11,6 +11,7 @@ local servers = {
   -- "texlab", "pyright", "clangd", "cmake",
   "taplo",
   "yamlls",
+  "clangd",
 }
 local nvlsp = require "nvchad.configs.lspconfig"
 

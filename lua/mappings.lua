@@ -3,9 +3,13 @@ require "nvchad.mappings"
 -- add yours here
 
 local map = vim.keymap.set
+local nomap = vim.keymap.del
 
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("i", "jk", "<ESC>")
+
+-- To set maps you don't like.
+nomap("i", "<C-k>")
 
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
 
@@ -95,6 +99,7 @@ map("n", "<leader>fn", ":lua require('lint').try_lint()<CR>", { desc = "Lint cur
 map("n", "<leader>sf", ":Lspsaga finder<CR>", { desc = "Use LSPSaga to find word under cursor" })
 map("n", "<leader>sd", ":Lspsaga hover_doc<CR>", { desc = "Use LSPSaga to check documentation under cursor" })
 map("n", "<leader>sc", ":Lspsaga code_action<CR>", { desc = "Use LSPSaga for available code actions" })
+map("n", "<leader>sn", ":Lspsaga rename<CR>", { desc = "Use LSPSaga to rename a vairiable/function, etc." })
 
 -- LSP related
 map("n", "<leader>ct", function()
