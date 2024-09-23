@@ -316,7 +316,7 @@ return {
 
   -- 10. properly configures LuaLS for editing your Neovim config by lazily updating your workspace libraries.
   --
-  -- NOTE:
+  -- NOTE: Copy some config from github, hope this works.
   --
   -- TBH I have no idea how to use it.
   {
@@ -331,17 +331,177 @@ return {
     },
   },
   { "Bilal2453/luvit-meta", lazy = true }, -- optional `vim.uv` typings
-  { -- optional completion source for require statements and module annotations
+  -- { -- optional completion source for require statements and module annotations
+  --   "hrsh7th/nvim-cmp",
+  --   opts = function(_, opts)
+  --     opts.sources = opts.sources or {}
+  --     table.insert(opts.sources, {
+  --       name = "lazydev",
+  --       group_index = 0, -- set group index to 0 to skip loading LuaLS completions
+  --     })
+  --   end,
+  -- },
+  -- { "folke/neodev.nvim", enabled = false }, -- make sure to uninstall or disable neodev.nvim
+
+  -- nvim-cmp config from `https://github.com/gonstoll/dotfiles/blob/master/nvim/.config/nvim/lua/plugins/cmp.lua`
+  {
     "hrsh7th/nvim-cmp",
-    opts = function(_, opts)
-      opts.sources = opts.sources or {}
-      table.insert(opts.sources, {
-        name = "lazydev",
-        group_index = 0, -- set group index to 0 to skip loading LuaLS completions
+    dependencies = {
+      "L3MON4D3/LuaSnip",
+      "saadparwaiz1/cmp_luasnip",
+      "hrsh7th/cmp-nvim-lsp",
+      "rafamadriz/friendly-snippets",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+      "hrsh7th/cmp-calc",
+      "hrsh7th/cmp-emoji",
+      -- "onsails/lspkind.nvim",
+    },
+    event = "VeryLazy",
+    -- print(vim.g.colors_name)
+    config = function()
+      local cmp = require "cmp"
+      -- local lspkind = require "lspkind"
+      local luasnip = require "luasnip"
+      local cmp_select_opts = { behavior = cmp.SelectBehavior.Select }
+
+      -- local function formatForTailwindCSS(entry, vim_item)
+      --   if vim_item.kind == "Color" and entry.completion_item.documentation then
+      --     local _, _, r, g, b = string.find(entry.completion_item.documentation, "^rgb%((%d+), (%d+), (%d+)")
+      --     if r then
+      --       local color = string.format("%02x", r) .. string.format("%02x", g) .. string.format("%02x", b)
+      --       local group = "Tw_" .. color
+      --       if vim.fn.hlID(group) < 1 then
+      --         vim.api.nvim_set_hl(0, group, { fg = "#" .. color })
+      --       end
+      --       vim_item.kind = "●"
+      --       vim_item.kind_hl_group = group
+      --       return vim_item
+      --     end
+      --   end
+      --   vim_item.kind = lspkind.symbolic(vim_item.kind) and lspkind.symbolic(vim_item.kind) or vim_item.kind
+      --   return vim_item
+      -- end
+
+      cmp.setup {
+        snippet = {
+          expand = function(args)
+            luasnip.lsp_expand(args.body)
+          end,
+        },
+        preselect = cmp.PreselectMode.None,
+        completion = {
+          completeopt = "menu,menuone,noinsert,noselect",
+        },
+        mapping = {
+          ["<CR>"] = cmp.mapping.confirm { select = false, behavior = cmp.ConfirmBehavior.Insert },
+          ["<C-e>"] = cmp.mapping.abort(),
+          ["<C-u>"] = cmp.mapping.scroll_docs(-4),
+          ["<C-d>"] = cmp.mapping.scroll_docs(4),
+          ["<Up>"] = cmp.mapping.select_prev_item(cmp_select_opts),
+          ["<Down>"] = cmp.mapping.select_next_item(cmp_select_opts),
+          ["<C-p>"] = cmp.mapping.select_prev_item(cmp_select_opts),
+          ["<C-n>"] = cmp.mapping.select_next_item(cmp_select_opts),
+          ["<C-y>"] = cmp.mapping.complete(),
+          ["<Tab>"] = cmp.mapping(function(fallback)
+            if luasnip.expand_or_jumpable() then
+              luasnip.expand_or_jump()
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+          ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if luasnip.jumpable(-1) then
+              luasnip.jump(-1)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+        },
+        sources = cmp.config.sources({
+          { name = "lazydev", group_index = 0 },
+          { name = "nvim_lsp" },
+          { name = "luasnip" },
+          { name = "nvim_lua" },
+        }, {
+          { name = "buffer" },
+          { name = "emoji" },
+          { name = "calc" },
+          { name = "path" },
+        }),
+        -- formatting = {
+        --   fields = { "abbr", "menu", "kind" },
+        --   format = lspkind.cmp_format {
+        --     mode = "symbol",
+        --     maxwidth = 200,
+        --     ellipsis_char = "...",
+        --     before = function(entry, item)
+        --       local fallback_name = "[" .. entry.source.name .. "]"
+        --       local menu_icon = {
+        --         nvim_lsp = "[LSP]",
+        --         luasnip = "[snip]",
+        --         path = "[path]",
+        --         emoji = "[🤌]",
+        --         nvim_lua = "[api]",
+        --         calc = "[calc]",
+        --         buffer = "[buf]",
+        --         cmdline = "[cmd]",
+        --       }
+        --
+        --       item = formatForTailwindCSS(entry, item)
+        --       item.menu = menu_icon[entry.source.name] or fallback_name
+        --
+        --       return item
+        --     end,
+        --   },
+        -- },
+
+        -- disable completion in comments
+        enabled = function()
+          local context = require "cmp.config.context"
+
+          -- keep command mode completion enabled when cursor is in a comment
+          if vim.api.nvim_get_mode().mode == "c" then
+            return true
+          else
+            return not context.in_treesitter_capture "comment" and not context.in_syntax_group "Comment"
+          end
+        end,
+      }
+
+      -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+      cmp.setup.cmdline({ "/", "?" }, {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+          { name = "buffer" },
+        },
+      })
+
+      -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+      cmp.setup.cmdline(":", {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+          { name = "path" },
+        }, {
+          { name = "cmdline" },
+        }),
+      })
+
+      vim.api.nvim_create_autocmd("ModeChanged", {
+        pattern = "*",
+        callback = function()
+          if
+            ((vim.v.event.old_mode == "s" and vim.v.event.new_mode == "n") or vim.v.event.old_mode == "i")
+            and require("luasnip").session.current_nodes[vim.api.nvim_get_current_buf()]
+            and not require("luasnip").session.jump_active
+          then
+            require("luasnip").unlink_current()
+          end
+        end,
       })
     end,
   },
-  -- { "folke/neodev.nvim", enabled = false }, -- make sure to uninstall or disable neodev.nvim
 
   -- 11. improve lsp experences in neovim
   -- Three ways to lazy load lspsaga:
@@ -1262,7 +1422,7 @@ return {
   },
 
   -- 44. nvim-cmp setup
-  -- NOTE: Not works! Check later.
+  -- TODO: Not works! Check later.
   -- {
   --   "hrsh7th/nvim-cmp",
   --   event = "InsertEnter",
@@ -1401,17 +1561,17 @@ return {
 
   -- 49. provides a simple way to run and visualize code actions with Telescope.
   -- NOTE: Disable it unless need it.
-  -- {
-  --   "rachartier/tiny-code-action.nvim",
-  --   dependencies = {
-  --     { "nvim-lua/plenary.nvim" },
-  --     { "nvim-telescope/telescope.nvim" },
-  --   },
-  --   event = "LspAttach",
-  --   config = function()
-  --     require("tiny-code-action").setup()
-  --   end,
-  -- },
+  {
+    "rachartier/tiny-code-action.nvim",
+    dependencies = {
+      { "nvim-lua/plenary.nvim" },
+      { "nvim-telescope/telescope.nvim" },
+    },
+    event = "LspAttach",
+    config = function()
+      require("tiny-code-action").setup()
+    end,
+  },
 
   -- 51. Populate the quickfix with json entries
   -- nvim-jqx exposes two commands: JqxList and JqxQuery.
@@ -1456,6 +1616,80 @@ return {
   --   "kkoomen/vim-doge",
   --   event = "LspAttach",
   -- },
+
+  -- 54. AI-powered coding, seamlessly in Neovim. Supports Anthropic, Copilot, Gemini, Ollama and OpenAI LLMs
+  -- NOTE: Doesn't work with Gemini... not sure why. Disable it for now.
+  -- {
+  --   "olimorris/codecompanion.nvim",
+  --   event = "InsertEnter",
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --     "nvim-treesitter/nvim-treesitter",
+  --     "hrsh7th/nvim-cmp", -- Optional: For using slash commands and variables in the chat buffer
+  --     "nvim-telescope/telescope.nvim", -- Optional: For using slash commands
+  --     { "stevearc/dressing.nvim", opts = {} }, -- Optional: Improves the default Neovim UI
+  --   },
+  --   -- config = true,
+  --   config = function()
+  --     require("codecompanion").setup {
+  --       opts = {
+  --         log_level = "DEBUG",
+  --       },
+  --       strategies = {
+  --         chat = {
+  --           adapter = "gemini",
+  --         },
+  --         inline = {
+  --           adapter = "gemini",
+  --         },
+  --         agent = {
+  --           adapter = "gemini",
+  --         },
+  --       },
+  --       adapters = {
+  --         opts = {
+  --           allow_insecure = true, -- Use if required
+  --           proxy = "socks5://192.168.1.6:10808",
+  --         },
+  --         gemini = function()
+  --           return require("codecompanion.adapters").extend("gemini", {
+  --             -- url = "https://generativelanguage.googleapis.com/v1beta/models/${model}-latest:generateContent?key=${api_key}",
+  --             env = {
+  --               api_key = "API-KEY",
+  --             },
+  --           })
+  --         end,
+  --       },
+  --     }
+  --   end,
+  -- },
+
+  -- 55. Gp.nvim (GPT prompt) Neovim AI plugin: ChatGPT sessions & Instructable text/code operations
+  -- & Speech to text [OpenAI, Ollama, Anthropic, ..]
+  -- NOTE: Just put it as a plugin which will be enabled if really needed, not configured yet!!
+  -- {
+  --   "robitx/gp.nvim",
+  --   config = function()
+  --     local conf = {
+  --       -- For customization, refer to Install > Configuration in the Documentation/Readme
+  --     }
+  --     require("gp").setup(conf)
+  --
+  --     -- Setup shortcuts here (see Usage > Shortcuts in the Documentation/Readme)
+  --   end,
+  -- },
+
+  -- 56. Generic log syntax highlighting and filetype management for Neovim
+  -- Not specific doc need, it will automatically highlight log file (file extension as `.log`)
+  -- A simple and lightweight Neovim plugin that brings syntax highlighting to generic log patterns
+  -- and provides straight-forward configuration to manage the filetype detection rules over your preferred log files.
+  {
+    "fei6409/log-highlight.nvim",
+    event = "InsertEnter",
+    config = function()
+      require("log-highlight").setup {}
+    end,
+  },
 
   -- Backup plugins
   -- 1. lspkind: https://github.com/onsails/lspkind.nvim
