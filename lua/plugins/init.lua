@@ -513,10 +513,17 @@ return {
       "hrsh7th/cmp-nvim-lua",
       "hrsh7th/cmp-cmdline",
       "hrsh7th/cmp-path",
+      "hrsh7th/cmp-emoji",
       "f3fora/cmp-spell",
       "hrsh7th/cmp-nvim-lsp-signature-help",
       "saadparwaiz1/cmp_luasnip",
       "lukas-reineke/cmp-under-comparator",
+      "kdheepak/cmp-latex-symbols",
+      "micangl/cmp-vimtex",
+      "ray-x/cmp-treesitter",
+      "DasGandlaf/nvim-autohotkey",
+      -- "gbprod/yanky.nvim",
+      -- "chrisgrieser/cmp_yanky",
     },
     config = function()
       local kind_icons = {
@@ -551,6 +558,8 @@ return {
       local cmplsp = require "cmp_nvim_lsp"
       local compare = require "cmp.config.compare"
       local luasnip = require "luasnip"
+      local MAX_ABBR_WIDTH = 30
+      local MAX_MENU_WIDTH = 30
 
       cmplsp.setup()
 
@@ -568,6 +577,12 @@ return {
           expandable_indicator = true,
           fields = { "abbr", "kind", "menu" },
           format = function(entry, vim_item)
+            if vim.api.nvim_strwidth(vim_item.abbr) > MAX_ABBR_WIDTH then
+              vim_item.abbr = vim.fn.strcharpart(vim_item.abbr, 0, MAX_ABBR_WIDTH) .. "…"
+            end
+            if vim.api.nvim_strwidth(vim_item.menu or "") > MAX_MENU_WIDTH then
+              vim_item.menu = vim.fn.strcharpart(vim_item.menu, 0, MAX_MENU_WIDTH) .. "…"
+            end
             local kind = vim_item.kind
             vim_item.kind = " " .. (kind_icons[kind] or "?") .. ""
             local source = entry.source.name
@@ -597,9 +612,9 @@ return {
         },
         min_length = 0, -- allow for `from package import _` in Python
         mapping = cmp.mapping.preset.insert {
-          ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-          ["<C-f>"] = cmp.mapping.scroll_docs(4),
-          ["<C-Space>"] = cmp.mapping.complete(),
+          ["<C-u>"] = cmp.mapping.scroll_docs(-4),
+          ["<C-d>"] = cmp.mapping.scroll_docs(4),
+          ["<C-y>"] = cmp.mapping.complete(),
           ["<CR>"] = cmp.mapping.confirm { select = false }, -- no not select first item
           ["<C-e>"] = cmp.mapping.abort(),
           ["<Tab>"] = cmp.mapping(function(fallback)
@@ -622,9 +637,16 @@ return {
           end, { "i", "s" }),
         },
         sources = {
+          { name = "lazydev", group_index = 0 },
           { name = "luasnip", max_item_count = 5 },
           { name = "nvim_lsp", max_item_count = 5 },
           { name = "nvim_lua", max_item_count = 5 },
+          { name = "crates", max_item_count = 5 },
+          { name = "emoji", max_item_count = 5 }, --  type :smile, accept the suggestion from the popular menu
+          { name = "vimtex", max_item_count = 5 },
+          { name = "treesitter", max_item_count = 5 },
+          { name = "autohotkey", max_item_count = 5 },
+          -- { name = "cmp_yanky", max_item_count = 3 },
           { name = "buffer", max_item_count = 5, keyword_length = 3 },
           { name = "nvim_lsp_signature_help", max_item_count = 5 },
           {
@@ -638,12 +660,33 @@ return {
               end,
             },
           },
+          {
+            name = "latex_symbols", -- use \alpha to try it.
+            option = {
+              -- Type: number Default: 0 -- mixed Possible values:
+              -- 0 -- mixed Show the command and insert the symbol
+              -- 1 -- julia Show and insert the symbol
+              -- 2 -- latex Show and insert the command
+              strategy = 0, -- mixed
+            },
+          },
         },
         -- performance = {
         --   max_view_entries = 20,
         -- },
-        window = { documentation = cmp.config.window.bordered(), completion = cmp.config.window.bordered() },
+        window = {
+          documentation = cmp.config.window.bordered(),
+          completion = cmp.config.window.bordered(),
+        },
       }
+
+      -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+      cmp.setup.cmdline({ "/", "?" }, {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+          { name = "buffer" },
+        },
+      })
 
       -- `:` cmdline setup.
       cmp.setup.cmdline(":", {
@@ -792,6 +835,7 @@ return {
       require("telescope").load_extension "zoxide"
       require("telescope").load_extension "nerdy"
       require("telescope").load_extension "aerial"
+      require("telescope").load_extension "yank_history"
       -- require("telescope").load_extension "themes"
     end,
   },
@@ -1844,6 +1888,95 @@ return {
     config = function()
       require("log-highlight").setup {}
     end,
+  },
+
+  -- 57. A neovim plugin that helps managing crates.io dependencies.
+  -- Command
+  --    :Crates <subcmd>
+  -- Run a crates.nvim <subcmd>. All <subcmd>s are just wrappers around the corresponding functions.
+  -- Possible key mappings as below:
+  -- local crates = require("crates")
+  -- local opts = { silent = true }
+  --
+  -- vim.keymap.set("n", "<leader>ct", crates.toggle, opts)
+  -- vim.keymap.set("n", "<leader>cr", crates.reload, opts)
+  --
+  -- vim.keymap.set("n", "<leader>cv", crates.show_versions_popup, opts)
+  -- vim.keymap.set("n", "<leader>cf", crates.show_features_popup, opts)
+  -- vim.keymap.set("n", "<leader>cd", crates.show_dependencies_popup, opts)
+  --
+  -- vim.keymap.set("n", "<leader>cu", crates.update_crate, opts)
+  -- vim.keymap.set("v", "<leader>cu", crates.update_crates, opts)
+  -- vim.keymap.set("n", "<leader>ca", crates.update_all_crates, opts)
+  -- vim.keymap.set("n", "<leader>cU", crates.upgrade_crate, opts)
+  -- vim.keymap.set("v", "<leader>cU", crates.upgrade_crates, opts)
+  -- vim.keymap.set("n", "<leader>cA", crates.upgrade_all_crates, opts)
+  --
+  -- vim.keymap.set("n", "<leader>cx", crates.expand_plain_crate_to_inline_table, opts)
+  -- vim.keymap.set("n", "<leader>cX", crates.extract_crate_into_table, opts)
+  --
+  -- vim.keymap.set("n", "<leader>cH", crates.open_homepage, opts)
+  -- vim.keymap.set("n", "<leader>cR", crates.open_repository, opts)
+  -- vim.keymap.set("n", "<leader>cD", crates.open_documentation, opts)
+  -- vim.keymap.set("n", "<leader>cC", crates.open_crates_io, opts)
+  -- vim.keymap.set("n", "<leader>cL", crates.open_lib_rs, opts)
+  {
+    "saecki/crates.nvim",
+    event = "LspAttach",
+    tag = "stable",
+    config = function()
+      local crates = require "crates"
+      -- local opts = { silent = true }
+      vim.keymap.set("n", "<leader>cp", crates.show_popup, { silent = true, desc = "Open Crates popup menu" })
+      vim.keymap.set("n", "<leader>cd", crates.hide_popup, { silent = true, desc = "Close Crates popup menu" })
+      vim.keymap.set("n", "<leader>cv", crates.show_versions_popup, { silent = true, desc = "Crates show versions" })
+      vim.keymap.set("n", "<leader>cf", crates.show_features_popup, { silent = true, desc = "Crates show features" })
+
+      crates.setup {
+        completion = {
+          cmp = {
+            enabled = true,
+          },
+        },
+      }
+    end,
+  },
+
+  -- 58. Improved Yank and Put functionalities for Neovim
+  {
+    "gbprod/yanky.nvim",
+    dependencies = {
+      { "kkharji/sqlite.lua" },
+    },
+    opts = {
+      ring = { storage = "sqlite" },
+    },
+    keys = {
+      {
+        "<leader>pp",
+        function()
+          require("telescope").extensions.yank_history.yank_history {}
+        end,
+        desc = "Open Yank History",
+      },
+      -- { "y", "<Plug>(YankyYank)", mode = { "n", "x" }, desc = "Yank text" },
+      -- { "p", "<Plug>(YankyPutAfter)", mode = { "n", "x" }, desc = "Put yanked text after cursor" },
+      -- { "P", "<Plug>(YankyPutBefore)", mode = { "n", "x" }, desc = "Put yanked text before cursor" },
+      -- { "gp", "<Plug>(YankyGPutAfter)", mode = { "n", "x" }, desc = "Put yanked text after selection" },
+      -- { "gP", "<Plug>(YankyGPutBefore)", mode = { "n", "x" }, desc = "Put yanked text before selection" },
+      -- { "<c-p>", "<Plug>(YankyPreviousEntry)", desc = "Select previous entry through yank history" },
+      -- { "<c-n>", "<Plug>(YankyNextEntry)", desc = "Select next entry through yank history" },
+      -- { "]p", "<Plug>(YankyPutIndentAfterLinewise)", desc = "Put indented after cursor (linewise)" },
+      -- { "[p", "<Plug>(YankyPutIndentBeforeLinewise)", desc = "Put indented before cursor (linewise)" },
+      -- { "]P", "<Plug>(YankyPutIndentAfterLinewise)", desc = "Put indented after cursor (linewise)" },
+      -- { "[P", "<Plug>(YankyPutIndentBeforeLinewise)", desc = "Put indented before cursor (linewise)" },
+      -- { ">p", "<Plug>(YankyPutIndentAfterShiftRight)", desc = "Put and indent right" },
+      -- { "<p", "<Plug>(YankyPutIndentAfterShiftLeft)", desc = "Put and indent left" },
+      -- { ">P", "<Plug>(YankyPutIndentBeforeShiftRight)", desc = "Put before and indent right" },
+      -- { "<P", "<Plug>(YankyPutIndentBeforeShiftLeft)", desc = "Put before and indent left" },
+      -- { "=p", "<Plug>(YankyPutAfterFilter)", desc = "Put after applying a filter" },
+      -- { "=P", "<Plug>(YankyPutBeforeFilter)", desc = "Put before applying a filter" },
+    },
   },
 
   -- Backup plugins

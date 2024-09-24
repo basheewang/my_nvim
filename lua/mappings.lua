@@ -113,3 +113,6 @@ map("n", "<leader>sr", ":SnipRun<CR>", { desc = "Use SnipRun to run the code", s
 map("n", "<leader>sk", function()
   require("lsp_signature").toggle_float_win()
 end, { silent = true, noremap = true, desc = "toggle signature" })
+
+-- crates key mappings
+-- map("n", "<leader>cs", ":Crates toggle<CR>", { desc = "Toggle Crates features" })
