@@ -1979,6 +1979,174 @@ return {
     },
   },
 
+  -- 59. Multiple cursors in Neovim which work how you expect.
+  -- Selecting Cursors
+  --    You can add cursors above/below the current cursor with <up> and <down>.
+  --    You can match the word under the cursor with <c-n> or <c-s> to skip. You can also use the mouse with <c-leftmouse>.
+  -- Using the Cursors
+  --    Once you have your cursors, you use vim normally as you would with a single cursor.
+  -- Finished
+  --    When you want to collapse your cursors back into one, press <esc>.
+  {
+    "jake-stewart/multicursor.nvim",
+    branch = "1.0",
+    config = function()
+      local mc = require "multicursor-nvim"
+
+      mc.setup()
+
+      -- Add cursors above/below the main cursor.
+      vim.keymap.set({ "n", "v" }, "<up>", function()
+        mc.addCursor "k"
+      end)
+      vim.keymap.set({ "n", "v" }, "<down>", function()
+        mc.addCursor "j"
+      end)
+
+      -- Add a cursor and jump to the next word under cursor.
+      vim.keymap.set({ "n", "v" }, "<c-n>", function()
+        mc.addCursor "*"
+      end)
+
+      -- Jump to the next word under cursor but do not add a cursor.
+      vim.keymap.set({ "n", "v" }, "<c-s>", function()
+        mc.skipCursor "*"
+      end)
+
+      -- Rotate the main cursor.
+      vim.keymap.set({ "n", "v" }, "<left>", mc.nextCursor)
+      vim.keymap.set({ "n", "v" }, "<right>", mc.prevCursor)
+
+      -- Delete the main cursor.
+      vim.keymap.set({ "n", "v" }, "<leader>x", mc.deleteCursor)
+
+      -- Add and remove cursors with control + left click.
+      vim.keymap.set("n", "<c-leftmouse>", mc.handleMouse)
+
+      vim.keymap.set({ "n", "v" }, "<c-q>", function()
+        if mc.cursorsEnabled() then
+          -- Stop other cursors from moving.
+          -- This allows you to reposition the main cursor.
+          mc.disableCursors()
+        else
+          mc.addCursor()
+        end
+      end)
+
+      vim.keymap.set("n", "<esc>", function()
+        if not mc.cursorsEnabled() then
+          mc.enableCursors()
+        elseif mc.hasCursors() then
+          mc.clearCursors()
+        else
+          -- Default <esc> handler.
+        end
+      end)
+
+      -- Align cursor columns.
+      vim.keymap.set("n", "<leader>a", mc.alignCursors)
+
+      -- Split visual selections by regex.
+      vim.keymap.set("v", "S", mc.splitCursors)
+
+      -- Append/insert for each line of visual selections.
+      vim.keymap.set("v", "I", mc.insertVisual)
+      vim.keymap.set("v", "A", mc.appendVisual)
+
+      -- match new cursors within visual selections by regex.
+      vim.keymap.set("v", "M", mc.matchCursors)
+
+      -- Rotate visual selection contents.
+      vim.keymap.set("v", "<leader>t", function()
+        mc.transposeCursors(1)
+      end)
+      vim.keymap.set("v", "<leader>T", function()
+        mc.transposeCursors(-1)
+      end)
+
+      -- Customize how cursors look.
+      vim.api.nvim_set_hl(0, "MultiCursorCursor", { link = "Cursor" })
+      vim.api.nvim_set_hl(0, "MultiCursorVisual", { link = "Visual" })
+      vim.api.nvim_set_hl(0, "MultiCursorDisabledCursor", { link = "Visual" })
+      vim.api.nvim_set_hl(0, "MultiCursorDisabledVisual", { link = "Visual" })
+    end,
+  },
+
+  -- 60. plugin that brings stochastic parrots to Neovim.
+  -- This is a gp.nvim-fork focused on simplicity.
+  -- | Command                | Description                                                     |
+  -- |------------------------+-----------------------------------------------------------------|
+  -- | PrtChatNew <target>    | Open a new chat                                                 |
+  -- | PrtChatToggle <target> | Toggle chat (open last chat or new one)                         |
+  -- | PrtChatPaste <target>  | Paste visual selection into the latest chat                     |
+  -- | PrtInfo                | Print plugin config                                             |
+  -- | PrtContext <target>    | Edits the local context file                                    |
+  -- | PrtChatFinder          | Fuzzy search chat files using fzf                               |
+  -- | PrtChatDelete          | Delete the current chat file                                    |
+  -- | PrtChatRespond         | Trigger chat respond (in chat file)                             |
+  -- | PrtStop                | Interrupt ongoing respond                                       |
+  -- | PrtProvider <provider> | Switch the provider (empty arg triggers fzf)                    |
+  -- | PrtModel <model>       | Switch the model (empty arg triggers fzf)                       |
+  -- | PrtStatus              | Prints current provider and model selection                     |
+  -- | Interactive            |                                                                 |
+  -- | PrtRewrite             | Rewrites the visual selection based on a provided prompt        |
+  -- | PrtAppend              | Append text to the visual selection based on a provided prompt  |
+  -- | PrtPrepend             | Prepend text to the visual selection based on a provided prompt |
+  -- | PrtNew                 | Prompt the model to respond in a new window                     |
+  -- | PrtEnew                | Prompt the model to respond in a new buffer                     |
+  -- | PrtVnew                | Prompt the model to respond in a vsplit                         |
+  -- | PrtTabnew              | Prompt the model to respond in a new tab                        |
+  -- | PrtRetry               | Repeats the last rewrite/append/prepend                         |
+  -- | Example Hooks          |                                                                 |
+  -- | PrtImplement           | Takes the visual selection as prompt to generate code           |
+  -- | PrtAsk                 | Ask the model a question                                        |
+  --
+  -- With <target>, we indicate the command to open the chat within one of the following target locations (defaults to toggle_target):
+  --    popup: open a popup window which can be configured via the options provided below
+  --    split: open the chat in a horizontal split
+  --    vsplit: open the chat in a vertical split
+  --    tabnew: open the chat in a new tab
+  {
+    "frankroeder/parrot.nvim",
+    event = "InsertEnter",
+    dependencies = { "ibhagwan/fzf-lua", "nvim-lua/plenary.nvim" },
+    opts = {},
+    config = function()
+      require("parrot").setup {
+        -- Providers must be explicitly added to make them available.
+        providers = {
+          anthropic = {
+            api_key = os.getenv "ANTHROPIC_API_KEY",
+            topic = {
+              model = "claude-3-haiku-20240307",
+              params = { max_tokens = 32 },
+            },
+          },
+          gemini = {
+            api_key = os.getenv "GEMINI_API_KEY",
+          },
+          -- groq = {
+          --   api_key = os.getenv "GROQ_API_KEY",
+          -- },
+          -- mistral = {
+          --   api_key = os.getenv "MISTRAL_API_KEY",
+          -- },
+          -- pplx = {
+          --   api_key = os.getenv "PERPLEXITY_API_KEY",
+          -- },
+          -- -- provide an empty list to make provider available (no API key required)
+          -- ollama = {},
+          -- openai = {
+          --   api_key = os.getenv "OPENAI_API_KEY",
+          -- },
+          -- github = {
+          --   api_key = os.getenv "GITHUB_TOKEN",
+          -- },
+        },
+      }
+    end,
+  },
+
   -- Backup plugins
   -- 1. lspkind: https://github.com/onsails/lspkind.nvim
   -- 2. mini.nvim: https://github.com/echasnovski/mini.nvim

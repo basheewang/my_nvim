@@ -9,6 +9,7 @@ local options = {
     -- tex = { "latexindent" },
     -- json = { "jq" },
     yaml = { "yamlfmt" },
+    zsh = { "beautysh" },
     -- css = { "prettier" },
     -- html = { "prettier" },
   },
