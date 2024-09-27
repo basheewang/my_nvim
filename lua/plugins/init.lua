@@ -2147,6 +2147,57 @@ return {
     end,
   },
 
+  -- 61. Help you get in the flow with ripgrep in Neovim
+  -- Steps:
+  -- After restarting Neovim, press <leader>rg to open the RgFlow UI
+  -- Type in a search pattern and press <ENTER>
+  -- Note: <BS> (Backspace) or - will go up a dir
+  -- A search will run and populate the QuickFix window
+  -- Press dd to delete a QuickFix entry, or select a visual range and press d
+  -- Press TAB to mark a line and <S-TAB> to unmark a line, a line can be marked more than once
+  -- Press c/C to :Cfilter/:Cfilter then type a pattern to filter the quickfix results.
+  -- Default mappings
+  -- n = {
+  --     ["<leader>rG"] = "open_blank",      -- Open UI - search pattern = blank
+  --     ["<leader>rp"] = "open_paste",      -- Open UI - search pattern = First line of unnamed register as the search pattern
+  --     ["<leader>rg"] = "open_cword",      -- Open UI - search pattern = <cword>
+  --     ["<leader>rw"] = "open_cword_path", -- Open UI - search pattern = <cword> and path = current file's directory
+  --     ["<leader>rs"] = "search",          -- Run a search with the current parameters
+  --     ["<leader>ra"] = "open_again",      -- Open UI - search pattern = Previous search pattern
+  --     ["<leader>rx"] = "abort",           -- Close UI / abort searching / abortadding results
+  --     ["<leader>rc"] = "print_cmd",       -- Print a version of last run rip grep that can be pasted into a shell
+  --     ["<leader>r?"] = "print_status",    -- Print info about the current state of rgflow (mostly useful for deving on rgflow)
+  -- },
+  {
+    "mangelozzi/rgflow.nvim",
+    event = "InsertEnter",
+    opts = {},
+    config = function()
+      require("rgflow").setup {
+        -- Set the default rip grep flags and options for when running a search via
+        -- RgFlow. Once changed via the UI, the previous search flags are used for
+        -- each subsequent search (until Neovim restarts).
+        -- cmd_flags = "--smart-case --fixed-strings --ignore --max-columns 200",
+        -- WARNING !!! Glob for '-g *{*}' will not use .gitignore file: https://github.com/BurntSushi/ripgrep/issues/2252
+        cmd_flags = (
+          "--smart-case -g *.{*,py} -g !*.{min.js,pyc} --fixed-strings --no-fixed-strings --no-ignore -M 500"
+          -- Exclude globs
+          .. " -g !**/.angular/"
+          .. " -g !**/node_modules/"
+          .. " -g !**/static/*/jsapp/"
+          .. " -g !**/static/*/wcapp/"
+        ),
+
+        -- Mappings to trigger RgFlow functions
+        default_trigger_mappings = true,
+        -- These mappings are only active when the RgFlow UI (panel) is open
+        default_ui_mappings = true,
+        -- QuickFix window only mapping
+        default_quickfix_mappings = true,
+      }
+    end,
+  },
+
   -- Backup plugins
   -- 1. lspkind: https://github.com/onsails/lspkind.nvim
   -- 2. mini.nvim: https://github.com/echasnovski/mini.nvim
