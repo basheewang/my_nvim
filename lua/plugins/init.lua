@@ -1989,6 +1989,7 @@ return {
   --    When you want to collapse your cursors back into one, press <esc>.
   {
     "jake-stewart/multicursor.nvim",
+    -- event = "InsertEnter",
     branch = "1.0",
     config = function()
       local mc = require "multicursor-nvim"
