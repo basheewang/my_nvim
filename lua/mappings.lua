@@ -64,7 +64,9 @@ map(
 -- Some keymaps for better experience
 -- map("n", "<leader>cl", ":Calendar -view=year -position=left <CR>", { desc = "Display Calendar" })
 map("n", "<leader>cy", ":Calendar -view=year -week_number <CR>", { desc = "Display Yearly Calendar" })
-map("n", "<leader>tn", ":Nerdy <CR>", { desc = "Insert icons from Nerd fonts" })
+map("n", "<leader>tn", ":Telescope nerdy <CR>", { desc = "Insert icons from Nerd fonts" })
+map("n", "<leader>ty", ":Telescope yank_history <CR>", { desc = "open yank history with Telescope" })
+
 -- map("n", "z>", ":lua require('ufo').openAllFolds<CR>", { desc = "use ufo to open all folds" })
 map("n", "<leader>to", function()
   vim.opt.scrolloff = 999 - vim.o.scrolloff

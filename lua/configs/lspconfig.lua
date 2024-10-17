@@ -8,7 +8,8 @@ local servers = {
   "html",
   "cssls",
   "rust_analyzer",
-  -- "texlab", "pyright", "clangd", "cmake",
+  "texlab",
+  -- "pyright", "clangd", "cmake",
   "taplo",
   "yamlls",
 }
