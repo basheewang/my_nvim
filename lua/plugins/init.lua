@@ -643,7 +643,7 @@ return {
           { name = "treesitter", max_item_count = 5 },
           { name = "autohotkey", max_item_count = 5 },
           -- { name = "cmp_yanky", max_item_count = 3 },
-          { name = "buffer", max_item_count = 5, keyword_length = 3 },
+          { name = "buffer", max_item_count = 5, keyword_length = 2 },
           { name = "nvim_lsp_signature_help", max_item_count = 5 },
           {
             name = "spell",
@@ -674,6 +674,14 @@ return {
           documentation = cmp.config.window.bordered(),
           completion = cmp.config.window.bordered(),
         },
+
+        -- If you want insert `(` after select function or method item
+        -- local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+        -- local cmp = require('cmp')
+        -- cmp.event:on(
+        --   'confirm_done',
+        --   cmp_autopairs.on_confirm_done()
+        -- )
       }
 
       -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
@@ -2193,6 +2201,61 @@ return {
         default_quickfix_mappings = true,
       }
     end,
+  },
+
+  --62. autopairs for neovim written in lua
+  --
+  {
+    "windwp/nvim-autopairs",
+    event = "InsertEnter",
+    -- config = true,
+    -- use opts = {} for passing setup options
+    -- this is equivalent to setup({}) function
+    -- opts={},
+    config = function(_, opts)
+      require("nvim-autopairs").setup(opts)
+      local Rule = require "nvim-autopairs.rule"
+      local npairs = require "nvim-autopairs"
+      npairs.add_rule(Rule("$", "$", "tex"))
+      npairs.add_rule(Rule("$$", "$$", "tex"))
+
+      -- local cond = require "nvim-autopairs.conds"
+      -- print(vim.inspect(cond))
+      -- npairs.add_rules(
+      --   {
+      --     Rule("$", "$", { "tex", "latex" })
+      --       -- don't add a pair if the next character is %
+      --       :with_pair(cond.not_after_regex "%%")
+      --       -- don't add a pair if  the previous character is xxx
+      --       :with_pair(
+      --         cond.not_before_regex("xxx", 3)
+      --       )
+      --       -- don't move right when repeat character
+      --       :with_move(cond.none())
+      --       -- don't delete if the next character is xx
+      --       :with_del(cond.not_after_regex "xx")
+      --       -- disable adding a newline when you press <cr>
+      --       :with_cr(cond.none()),
+      --   },
+      --   -- disable for .vim files, but it work for another filetypes
+      --   Rule("a", "a", "-vim")
+      -- )
+
+      -- npairs.add_rules {
+      --   Rule("$$", "$$", "tex"):with_pair(function(opts)
+      --     print(vim.inspect(opts))
+      --     if opts.line == "aa $$" then
+      --       -- don't add pair on that line
+      --       return false
+      --     end
+      --   end),
+      -- }
+    end,
+    -- config = function()
+    --   local Rule = require "nvim-autopairs.rule"
+    --   local npairs = require "nvim-autopairs"
+    --   npairs.add_rule(Rule("$$", "$$", "tex"))
+    -- end,
   },
 
   -- Backup plugins
