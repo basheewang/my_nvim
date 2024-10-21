@@ -17,3 +17,7 @@ o.foldenable = true
 
 vim.cmd.colorscheme "tokyonight"
 -- vim.cmd.colorscheme "catppuccin"
+
+---@diagnostic disable-next-line: assign-type-mismatch
+require("luasnip.loaders.from_lua").load { paths = "~/.config/nvim/lua/snippets" }
+-- vim.g.lua_snippets_path = vim.fn.stdpath "config" .. "/lua/snippets"

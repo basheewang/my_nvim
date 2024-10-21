@@ -292,6 +292,34 @@ ls.add_snippets("tex", {
       }
     )
   ),
+  s(
+    "problem",
+    fmt(
+      [[
+	\item {}
+	      \begin{{figure}}[ht]
+		      \raggedleft
+		      \begin{{asy}}
+			      unitsize(1 cm);
+			      import patterns;
+            // import olympiad;
+			      add("bengal",hatch(0.8mm,blue+opacity(0.5)));
+            pair A,B,C{};
+            A=({});B=({});C=({});
+            {}
+		      \end{{asy}}
+	      \end{{figure}}
+      ]],
+      {
+        i(1, "Problem Description."),
+        i(2, ",D,E,F;"),
+        i(3, "0,0"),
+        i(4, "4,0"),
+        i(5, "0,4"),
+        i(6, "dot((0,0));"),
+      }
+    )
+  ),
 }, {
   key = "tex",
 })
