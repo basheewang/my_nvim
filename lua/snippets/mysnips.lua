@@ -262,6 +262,7 @@ ls.add_snippets("tex", {
       }
     )
   ),
+  s("tabc",t"$\\triangle ABC$"),
   s(
     "twoasy",
     fmt(

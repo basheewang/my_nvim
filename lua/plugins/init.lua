@@ -36,6 +36,8 @@ return {
   --     'change quot*es'            cs'"            "change quotes"
   --     <b>or tag* types</b>        csth1<CR>       <h1>or tag types</h1>
   --     delete(functi*on calls)     dsf             function calls
+  -- There is a difference between ysiw( and ysiw). In particular,
+  -- the opening delimiter (e.g. ( or {) will add whitespace, while the closing delimiter does not.
   {
     "kylechui/nvim-surround",
     version = "*", -- Use for stability; omit to use `main` branch for the latest features
@@ -2256,6 +2258,23 @@ return {
     --   local npairs = require "nvim-autopairs"
     --   npairs.add_rule(Rule("$$", "$$", "tex"))
     -- end,
+  },
+
+  -- 63. Ever wondered which mappings are free to be mapped? Now it's a easier to figure it out.
+  -- :KeyAnalyzer calls this lua code: require('key-analyzer').show(prefix, mode) if you wish to map it yourself
+  -- | Command                      | Description                                                                                            |
+  -- |------------------------------+--------------------------------------------------------------------------------------------------------|
+  -- | :KeyAnalyzer <prefix> [mode] | Shows keyboard analysis for the given prefix and mode. Mode defaults to normal ('n') if not specified. |
+  -- | :KeyAnalyzer <leader>        | Show <leader> mappings                                                                                 |
+  -- | :KeyAnalyzer <leader>b       | Show mappings starting with <leader>b*                                                                 |
+  -- | :KeyAnalyzer <C-             | Show CTRL mappings                                                                                     |
+  -- | :KeyAnalyzer <C- v           | Show CTRL mappings in visual mode                                                                      |
+  -- | :KeyAnalyzer <M-             | Show Alt/Meta/Option mappings                                                                          |
+  -- | :KeyAnalyzer <M-             | Show Alt/Meta/Option mappings                                                                          |
+  -- | :KeyAnalyzer <C-M>x i        | Show mappings starting with CTRL + M x in insert mode                                                  |
+  {
+    "meznaric/key-analyzer.nvim",
+    opts = {},
   },
 
   -- Backup plugins
