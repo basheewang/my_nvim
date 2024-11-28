@@ -262,7 +262,49 @@ ls.add_snippets("tex", {
       }
     )
   ),
-  s("tabc",t"$\\triangle ABC$"),
+  s(
+    "aa",
+    fmt([[${1}$]], {
+      i(1, ""),
+    })
+  ),
+  s(
+    "dps",
+    fmt(
+      [[
+       \tkzDefPoints{{{},{},{}}}\tkzDrawPolygon({})
+       \tkzLabelPoint(B){{$B$}}\tkzLabelPoint(C){{$C$}}\tkzLabelPoint[above](A){{$A$}}
+      ]],
+      {
+        i(1, "0/0/B"),
+        i(2, "5/0/C"),
+        i(3, "4/4/A"),
+        i(4, "A,B,C"),
+      }
+    )
+  ),
+  s(
+    "tri",
+    fmt([[$\triangle {}$]], {
+      i(1, "ABC"),
+    })
+  ),
+  s(
+    "tep",
+    fmt(
+      [[
+	      \begin{{figure}}[H]
+		      \raggedleft
+		      \begin{{tikzpicture}}[scale=1]
+          {}
+		      \end{{tikzpicture}}
+	      \end{{figure}}
+      ]],
+      {
+        i(0),
+      }
+    )
+  ),
   s(
     "twoasy",
     fmt(

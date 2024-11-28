@@ -23,6 +23,7 @@ map(
 )
 map("n", "<leader>te", ":Telescope <CR>", { desc = "Open Telescope" })
 map("n", "<leader>fl", ":FzfLua <CR>", { desc = "Open fzf-lua commands list" })
+map("n", "<leader>fv", ":FzfLua live_grep_native <CR>", { desc = "Grep by fzf-lua live grep native" })
 map(
   "n",
   "<leader>fc",
@@ -118,3 +119,5 @@ end, { silent = true, noremap = true, desc = "toggle signature" })
 
 -- crates key mappings
 -- map("n", "<leader>cs", ":Crates toggle<CR>", { desc = "Toggle Crates features" })
+
+map("n", "<leader>ll", ":Legendary<CR>", { desc = "Show avaiable keymaps by Legendary", silent = true })
