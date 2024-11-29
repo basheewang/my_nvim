@@ -24,6 +24,7 @@ map(
 map("n", "<leader>te", ":Telescope <CR>", { desc = "Open Telescope" })
 map("n", "<leader>fl", ":FzfLua <CR>", { desc = "Open fzf-lua commands list" })
 map("n", "<leader>fv", ":FzfLua live_grep_native <CR>", { desc = "Grep by fzf-lua live grep native" })
+map("n", "<leader>fe", ":Telescope egrepify <CR>", { desc = "Grep by telescope egrepify extension" })
 map(
   "n",
   "<leader>fc",
@@ -67,6 +68,7 @@ map(
 map("n", "<leader>cy", ":Calendar -view=year -week_number <CR>", { desc = "Display Yearly Calendar" })
 map("n", "<leader>tn", ":Telescope nerdy <CR>", { desc = "Insert icons from Nerd fonts" })
 map("n", "<leader>ty", ":Telescope yank_history <CR>", { desc = "open yank history with Telescope" })
+map("n", "<leader>bb", "<cmd>enew<CR>", { desc = "buffer new" })
 
 -- map("n", "z>", ":lua require('ufo').openAllFolds<CR>", { desc = "use ufo to open all folds" })
 map("n", "<leader>to", function()

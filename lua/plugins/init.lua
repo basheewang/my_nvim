@@ -799,6 +799,7 @@ return {
       "andrew-george/telescope-themes",
       "nvim-lua/popup.nvim",
       "lexay/telescope-zoxide.nvim",
+      "fdschmidt93/telescope-egrepify.nvim",
     },
     config = function()
       require("telescope").setup {
@@ -842,6 +843,7 @@ return {
       require("telescope").load_extension "nerdy"
       require("telescope").load_extension "aerial"
       require("telescope").load_extension "yank_history"
+      require("telescope").load_extension "egrepify"
       -- require("telescope").load_extension "themes"
     end,
   },
@@ -2376,13 +2378,13 @@ return {
       --   end,
       --   desc = "Dismiss All Notifications",
       -- },
-      -- {
-      --   "<leader>bd",
-      --   function()
-      --     Snacks.bufdelete()
-      --   end,
-      --   desc = "Delete Buffer",
-      -- },
+      {
+        "<leader>bd",
+        function()
+          Snacks.bufdelete()
+        end,
+        desc = "Delete Buffer",
+      },
       -- {
       --   "<leader>gg",
       --   function()
@@ -2525,6 +2527,16 @@ return {
       -- -- Smears will blend better on all backgrounds.
       -- legacy_computing_symbols_support = false,
     },
+  },
+
+  -- 67. An alternative sudo.vim for Vim and Neovim, limited support sudo in Windows
+  -- print(vim.g.suda_smart_edit)
+  {
+    "lambdalisue/vim-suda",
+    lazy = false,
+    -- setup = function()
+    --   vim.g.suda_smart_edit = 1
+    -- end,
   },
 
   -- Backup plugins

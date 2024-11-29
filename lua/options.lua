@@ -21,3 +21,7 @@ vim.cmd.colorscheme "tokyonight"
 ---@diagnostic disable-next-line: assign-type-mismatch
 require("luasnip.loaders.from_lua").load { paths = "~/.config/nvim/lua/snippets" }
 -- vim.g.lua_snippets_path = vim.fn.stdpath "config" .. "/lua/snippets"
+
+-- global settings
+local g = vim.g
+g.suda_smart_edit = 1
