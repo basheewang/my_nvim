@@ -2564,13 +2564,13 @@ return {
   },
 
   -- 69. Fully featured & enhanced replacement for copilot.vim complete with API for interacting with Github Copilot
-  {
-    "zbirenbaum/copilot.nvim",
-    lazy = false,
-    -- setup = function()
-    --   vim.g.copilot_enabled = 1
-    -- end,
-  },
+  -- {
+  --   "zbirenbaum/copilot.nvim",
+  --   lazy = false,
+  --   -- setup = function()
+  --   --   vim.g.copilot_enabled = 1
+  --   -- end,
+  -- },
   {
     "zbirenbaum/copilot.lua",
     cmd = "Copilot",
