@@ -269,6 +269,20 @@ ls.add_snippets("tex", {
     })
   ),
   s(
+    "tj",
+    fmt(
+      [[
+{{\scriptsize （{}\textcolor{{{}}}{{{}}}{}）}}
+    ]],
+      {
+        i(1, ""),
+        i(2, "red"),
+        i(3, ""),
+        i(4, ""),
+      }
+    )
+  ),
+  s(
     "dps",
     fmt(
       [[

@@ -105,9 +105,11 @@ map("n", "<leader>sf", ":Lspsaga finder<CR>", { desc = "Use LSPSaga to find word
 map("n", "<leader>sd", ":Lspsaga hover_doc<CR>", { desc = "Use LSPSaga to check documentation under cursor" })
 map("n", "<leader>sc", ":Lspsaga code_action<CR>", { desc = "Use LSPSaga for available code actions" })
 map("n", "<leader>sn", ":Lspsaga rename<CR>", { desc = "Use LSPSaga to rename a vairiable/function, etc." })
+map("n", "<leader>sl", ":Lspsaga outline<CR>", { desc = "Use LSPSaga to show outline of current buffer" })
 
 -- LSP related
 map("n", "<leader>ct", function()
+---@diagnostic disable-next-line: missing-parameter
   require("tiny-code-action").code_action()
 end, { desc = "Code Action" })
 
@@ -123,3 +125,6 @@ end, { silent = true, noremap = true, desc = "toggle signature" })
 -- map("n", "<leader>cs", ":Crates toggle<CR>", { desc = "Toggle Crates features" })
 
 map("n", "<leader>ll", ":Legendary<CR>", { desc = "Show avaiable keymaps by Legendary", silent = true })
+
+-- Github copilot
+map("n", "<leader>co", ":Copilot<CR>", { desc = "Use Github Copilot" })

@@ -636,6 +636,7 @@ return {
         },
         sources = {
           { name = "lazydev", group_index = 0 },
+          { name = "copilot", max_item_count = 3 },
           { name = "luasnip", max_item_count = 5 },
           { name = "nvim_lsp", max_item_count = 5 },
           { name = "nvim_lua", max_item_count = 5 },
@@ -785,6 +786,19 @@ return {
   },
 
   -- 14. some extensions for telescope
+  -- telescope egrepify DEFAULTS filters:
+  --   1. filter for file suffixes
+  --      example prompt: #lua,md $MY_PROMPT
+  --      searches with ripgrep prompt $MY_PROMPT in files with extensions lua and md
+  --      i.e. rg --glob="*.{lua,md}" -- $MY_PROMPT
+  --   2. filter for (partial) folder names
+  --      example prompt: >conf $MY_PROMPT
+  --      searches with ripgrep prompt $MY_PROMPT in paths that have "conf" in folder
+  --      i.e. rg --glob="**/conf*/**" -- $MY_PROMPT
+  --   3. filter for (partial) file names
+  --      example prompt: &egrep $MY_PROMPT
+  --      searches with ripgrep prompt $MY_PROMPT in paths that have "egrep" in file name
+  --      i.e. rg --glob="*egrep*" -- $MY_PROMPT
   {
     "nvim-telescope/telescope.nvim",
     dependencies = {
@@ -1392,9 +1406,9 @@ return {
       -- },
       {
         "theHamsta/nvim-dap-virtual-text",
-        config = function()
-          require("nvim-dap-virtual-text").setup {}
-        end,
+        -- config = function()
+        --   require("nvim-dap-virtual-text").setup()
+        -- end,
       },
       {
         "rcarriga/nvim-dap-ui",
@@ -2305,20 +2319,20 @@ return {
   --
   -- " repeat the last item executed via legendary.nvim's finder, ignoring the filters used
   -- :LegendaryRepeat!
-  -- {
-  --   "mrjones2014/legendary.nvim",
-  --   -- since legendary.nvim handles all your keymaps/commands,
-  --   -- its recommended to load legendary.nvim before other plugins
-  --   priority = 10000,
-  --   lazy = false,
-  --   -- sqlite is only needed if you want to use frecency sorting
-  --   -- dependencies = { "kkharji/sqlite.lua" },
-  --   config = function()
-  --     require("legendary").setup {
-  --       extensions = { lazy_nvim = true },
-  --     }
-  --   end,
-  -- },
+  {
+    "mrjones2014/legendary.nvim",
+    -- since legendary.nvim handles all your keymaps/commands,
+    -- its recommended to load legendary.nvim before other plugins
+    priority = 10000,
+    lazy = false,
+    -- sqlite is only needed if you want to use frecency sorting
+    -- dependencies = { "kkharji/sqlite.lua" },
+    config = function()
+      require("legendary").setup {
+        extensions = { lazy_nvim = true },
+      }
+    end,
+  },
 
   -- 65. A collection of small QoL plugins.
   -- | Snack        | Description                                                                                                | Setup |
@@ -2537,6 +2551,45 @@ return {
     -- setup = function()
     --   vim.g.suda_smart_edit = 1
     -- end,
+  },
+
+  -- 68. A minimalist CSS unit converter for Neovim
+  {
+    "atiladefreitas/tinyunit",
+    config = function()
+      require("tinyunit").setup {
+        -- your custom config here (optional)
+      }
+    end,
+  },
+
+  -- 69. Fully featured & enhanced replacement for copilot.vim complete with API for interacting with Github Copilot
+  {
+    "zbirenbaum/copilot.nvim",
+    lazy = false,
+    -- setup = function()
+    --   vim.g.copilot_enabled = 1
+    -- end,
+  },
+  {
+    "zbirenbaum/copilot.lua",
+    cmd = "Copilot",
+    event = "InsertEnter",
+    config = function()
+      require("copilot").setup {}
+    end,
+  },
+  -- Lua plugin to turn github copilot into a cmp source
+  {
+    "zbirenbaum/copilot-cmp",
+    event = { "InsertEnter", "LspAttach" },
+    fix_pairs = true,
+    config = function()
+      require("copilot_cmp").setup {
+        suggestion = { enabled = false },
+        panel = { enabled = false },
+      }
+    end,
   },
 
   -- Backup plugins
