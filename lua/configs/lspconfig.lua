@@ -12,6 +12,8 @@ local servers = {
   -- "pyright", "clangd", "cmake",
   "taplo",
   "yamlls",
+  "neocmake",
+  "clangd",
 }
 local nvlsp = require "nvchad.configs.lspconfig"
 

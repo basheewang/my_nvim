@@ -84,6 +84,9 @@ map("n", "<leader>?", ":Cheatsheet<CR>", { desc = "open cheatsheet for reference
 map("n", "<leader>dd", ":lua require('dapui').toggle()<CR>", { desc = "Toggle Dap UI" })
 map("n", "<F5>", ":lua require('dap').continue()<CR>", { desc = "Continue Dap" })
 map("n", "<leader>B", ":lua require('dap').toggle_breakpoint()<CR>", { desc = "Toggle Breakpoint" })
+map("n", "<Leader>dr", function()
+  require("dap").repl.open()
+end)
 map("n", "<F10>", function()
   require("dap").step_over()
 end, { desc = "Dap step over" })
@@ -109,7 +112,7 @@ map("n", "<leader>sl", ":Lspsaga outline<CR>", { desc = "Use LSPSaga to show out
 
 -- LSP related
 map("n", "<leader>ct", function()
----@diagnostic disable-next-line: missing-parameter
+  ---@diagnostic disable-next-line: missing-parameter
   require("tiny-code-action").code_action()
 end, { desc = "Code Action" })
 

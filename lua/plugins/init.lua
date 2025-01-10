@@ -8,6 +8,9 @@ return {
   -- These are some examples, uncomment them if you want to see them work!
   {
     "neovim/nvim-lspconfig",
+    dependencies = {
+      "mfussenegger/nvim-lint",
+    },
     config = function()
       require "configs.lspconfig"
     end,
@@ -1353,14 +1356,40 @@ return {
   -- 33. an ultra fold in Neovim.
   -- NOTE: Looks has error when use it, Disable it for now.
   --
-  -- require('ufo').clos
-  -- {
-  --   "kevinhwang91/nvim-ufo",
-  --   event = "InsertEnter",
-  --   dependencies = {
-  --     "kevinhwang91/promise-async",
-  --   },
-  -- },
+  {
+    "kevinhwang91/nvim-ufo",
+    event = "InsertEnter",
+    dependencies = {
+      "kevinhwang91/promise-async",
+    },
+    keys = {
+      {
+        "zR",
+        mode = { "n" },
+        function()
+          require("ufo").openAllFolds()
+        end,
+        desc = "open folds by ufo",
+      },
+      {
+        "zM",
+        mode = { "n" },
+        function()
+          require("ufo").closeAllFolds()
+        end,
+        desc = "close folds by ufo",
+      },
+    },
+    config = function()
+      ---@diagnostic disable-next-line: missing-fields
+      require("ufo").setup {
+        ---@diagnostic disable-next-line: unused-local
+        provider_selector = function(bufnr, filetype, buftype)
+          return { "treesitter", "indent" }
+        end,
+      }
+    end,
+  },
 
   -- 34. Navigate your code with search labels, enhanced character motions and Treesitter integration
   {
@@ -1406,9 +1435,10 @@ return {
       -- },
       {
         "theHamsta/nvim-dap-virtual-text",
-        -- config = function()
-        --   require("nvim-dap-virtual-text").setup()
-        -- end,
+        config = function()
+          ---@diagnostic disable-next-line: missing-parameter
+          require("nvim-dap-virtual-text").setup()
+        end,
       },
       {
         "rcarriga/nvim-dap-ui",
@@ -1490,8 +1520,10 @@ return {
     "MeanderingProgrammer/render-markdown.nvim",
     event = "InsertEnter",
     opts = {},
-    dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
-    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "echasnovski/mini.nvim", -- if you use the mini.nvim suite
+    }, -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
     -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
     config = function()
       require("render-markdown").setup {}
@@ -1765,20 +1797,20 @@ return {
 
   -- 48. Mini icons: to use it instead of "nvim-web-devicons"
   -- NOTE: Disable it unless wanto use mini.icons instead of nvim-web-devicons
-  -- {
-  --   "echasnovski/mini.icons",
-  --   opts = {},
-  --   lazy = true,
-  --   specs = {
-  --     { "nvim-tree/nvim-web-devicons", enabled = false, optional = true },
-  --   },
-  --   init = function()
-  --     package.preload["nvim-web-devicons"] = function()
-  --       require("mini.icons").mock_nvim_web_devicons()
-  --       return package.loaded["nvim-web-devicons"]
-  --     end
-  --   end,
-  -- },
+  {
+    "echasnovski/mini.icons",
+    opts = {},
+    lazy = true,
+    specs = {
+      { "nvim-tree/nvim-web-devicons", enabled = false, optional = true },
+    },
+    init = function()
+      package.preload["nvim-web-devicons"] = function()
+        require("mini.icons").mock_nvim_web_devicons()
+        return package.loaded["nvim-web-devicons"]
+      end
+    end,
+  },
 
   -- 49. provides a simple way to run and visualize code actions with Telescope.
   -- NOTE: Disable it unless need it.
@@ -2544,7 +2576,9 @@ return {
   },
 
   -- 67. An alternative sudo.vim for Vim and Neovim, limited support sudo in Windows
-  -- print(vim.g.suda_smart_edit)
+  -- Use SudaRead to open unreadable files like:
+  -- " Re-open a current file with sudo
+  -- Or SudaWrite to write unwritable files
   {
     "lambdalisue/vim-suda",
     lazy = false,
@@ -2564,13 +2598,6 @@ return {
   },
 
   -- 69. Fully featured & enhanced replacement for copilot.vim complete with API for interacting with Github Copilot
-  -- {
-  --   "zbirenbaum/copilot.nvim",
-  --   lazy = false,
-  --   -- setup = function()
-  --   --   vim.g.copilot_enabled = 1
-  --   -- end,
-  -- },
   {
     "zbirenbaum/copilot.lua",
     cmd = "Copilot",
@@ -2591,10 +2618,160 @@ return {
       }
     end,
   },
+  -- Chat with GitHub Copilot in Neovim
+  -- Commands
+  -- :CopilotChat <input>? - Open chat window with optional input
+  -- :CopilotChatOpen - Open chat window
+  -- :CopilotChatClose - Close chat window
+  -- :CopilotChatToggle - Toggle chat window
+  -- :CopilotChatStop - Stop current copilot output
+  -- :CopilotChatReset - Reset chat window
+  -- :CopilotChatSave <name>? - Save chat history to file
+  -- :CopilotChatLoad <name>? - Load chat history from file
+  -- :CopilotChatDebugInfo - Show debug information
+  -- :CopilotChatModels - View and select available models. This is reset when a new instance is made. Please set your model in init.lua for persistence.
+  -- :CopilotChatAgents - View and select available agents. This is reset when a new instance is made. Please set your agent in init.lua for persistence.
+  -- :CopilotChat<PromptName> - Ask a question with a specific prompt. For example, :CopilotChatExplain will ask a question with the Explain prompt. See Prompts for more information.
+  -- Chat Mappings
+  -- <Tab> - Trigger completion menu for special tokens or accept current completion (see help)
+  -- q/<C-c> - Close the chat window
+  -- <C-l> - Reset and clear the chat window
+  -- <CR>/<C-s> - Submit the current prompt
+  -- gr - Toggle sticky prompt for the line under cursor
+  -- <C-y> - Accept nearest diff (works best with COPILOT_GENERATE prompt)
+  -- gj - Jump to section of nearest diff. If in different buffer, jumps there; creates buffer if needed (works best with COPILOT_GENERATE prompt)
+  -- gq - Add all diffs from chat to quickfix list
+  -- gy - Yank nearest diff to register (defaults to ")
+  -- gd - Show diff between source and nearest diff
+  -- gi - Show info about current chat (model, agent, system prompt)
+  -- gc - Show current chat context
+  -- gh - Show help message
+  {
+    {
+      "CopilotC-Nvim/CopilotChat.nvim",
+      event = { "InsertEnter", "LspAttach" },
+      dependencies = {
+        -- { "github/copilot.vim" }, -- or
+        { "zbirenbaum/copilot.lua" },
+        { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
+      },
+      build = "make tiktoken", -- Only on MacOS or Linux
+      opts = {
+        -- See Configuration section for options
+      },
+      -- See Commands section for default commands if you want to lazy load on them
+    },
+  },
+
+  -- 70. Track neglected plugins and rediscover the overlooked in your Neovim setup.
+  -- NOTE: Not much useful...
+  --
+  -- Use :Orphans to list all plugins.
+  -- Currently, orphans has its limitation. It will not pull the latest commit info from GitHub,
+  -- so you need to update the plugin manually using whatever plugin manager.
+  -- {
+  --   "ZWindL/orphans.nvim",
+  --   config = function()
+  --     require("orphans").setup {}
+  --   end,
+  -- },
+
+  -- 71. Use your Neovim like using Cursor AI IDE!
+  -- Open a code file in Neovim.
+  -- Use the :AvanteAsk command to query the AI about the code.
+  -- Review the AI's suggestions.
+  -- Apply the recommended changes directly to your code with a simple command or key binding.
+  -- The following key bindings are available for use with avante.nvim:
+  -- | Key Binding   | Description                                  |
+  -- |---------------+----------------------------------------------|
+  -- | <Leader>aa    | show sidebar                                 |
+  -- | <Leader>ar    | refresh sidebar                              |
+  -- | <Leader>af    | switch sidebar focus                         |
+  -- | <Leader>ae    | edit selected blocks                         |
+  -- | co            | choose ours                                  |
+  -- | ct            | choose theirs                                |
+  -- | ca            | choose all theirs                            |
+  -- | c0            | choose none                                  |
+  -- | cb            | choose both                                  |
+  -- | cc            | choose cursor                                |
+  -- | ]x            | move to previous conflict                    |
+  -- | [x            | move to next conflict                        |
+  -- | [[            | jump to previous codeblocks (results window) |
+  -- | ]]            | jump to next codeblocks (results windows)    |
+  -- |---------------+----------------------------------------------|
+  -- Avaiable commands:
+  -- |----------------------------------+---------------------------------------------------------------------------------------------------------+---------------------------------------------------|
+  -- | Command                          | Description                                                                                             | Examples                                          |
+  -- |----------------------------------+---------------------------------------------------------------------------------------------------------+---------------------------------------------------|
+  -- | :AvanteAsk [question] [position] | Ask AI about your code. Optional position set window position and ask enable/disable direct asking mode | :AvanteAsk position=right Refactor this code here |
+  -- | :AvanteBuild                     | Build dependencies for the project                                                                      |                                                   |
+  -- | :AvanteChat                      | Start a chat session with AI about your codebase. Default is ask=false                                  |                                                   |
+  -- | :AvanteEdit                      | Edit the selected code blocks                                                                           |                                                   |
+  -- | :AvanteFocus                     | Switch focus to/from the sidebar                                                                        |                                                   |
+  -- | :AvanteRefresh                   | Refresh all Avante windows                                                                              |                                                   |
+  -- | :AvanteSwitchProvider            | Switch AI provider (e.g. openai)                                                                        |                                                   |
+  -- | :AvanteShowRepoMap               | Show repo map for project's structure                                                                   |                                                   |
+  -- | :AvanteToggle                    | Toggle the Avante sidebar                                                                               |                                                   |
+  -- |----------------------------------+---------------------------------------------------------------------------------------------------------+---------------------------------------------------|
+  {
+    "yetone/avante.nvim",
+    event = "VeryLazy",
+    lazy = false,
+    version = false, -- set this to "*" if you want to always pull the latest change, false to update on release
+    opts = {
+      -- add any opts here
+    },
+    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+    build = "make",
+    -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
+    dependencies = {
+      "stevearc/dressing.nvim",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      --- The below dependencies are optional,
+      "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
+      -- "nvim-tree/nvim-web-devicons", -- or
+      "echasnovski/mini.icons",
+      "zbirenbaum/copilot.lua", -- for providers='copilot'
+      {
+        -- support for image pasting
+        "HakonHarnes/img-clip.nvim",
+        event = "VeryLazy",
+        opts = {
+          -- recommended settings
+          default = {
+            embed_image_as_base64 = false,
+            prompt_for_file_name = false,
+            drag_and_drop = {
+              insert_mode = true,
+            },
+            -- required for Windows users
+            use_absolute_path = true,
+          },
+        },
+      },
+      {
+        -- Make sure to set this up properly if you have lazy=true
+        "MeanderingProgrammer/render-markdown.nvim",
+        opts = {
+          file_types = { "markdown", "Avante" },
+        },
+        ft = { "markdown", "Avante" },
+      },
+    },
+  },
 
   -- Backup plugins
   -- 1. lspkind: https://github.com/onsails/lspkind.nvim
   -- 2. mini.nvim: https://github.com/echasnovski/mini.nvim
+  {
+    "echasnovski/mini.nvim",
+    version = false,
+    config = function()
+      require("mini.align").setup {}
+      -- require("mini.icon").setup {}
+    end,
+  },
 
   -- Thems collections --
   -- 1. midnight.nvim
