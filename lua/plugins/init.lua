@@ -9,6 +9,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     dependencies = {
+      -- https://github.com/mfussenegger/nvim-lint
       "mfussenegger/nvim-lint",
     },
     config = function()
@@ -746,27 +747,28 @@ return {
     event = "VeryLazy",
     config = function()
       require("rainbow-delimiters.setup").setup {
-        -- strategy = {
-        --   [""] = rainbow_delimiters.strategy["global"],
-        --   vim = rainbow_delimiters.strategy["local"],
-        -- },
-        -- query = {
-        --   [""] = "rainbow-delimiters",
-        --   lua = "rainbow-blocks",
-        -- },
-        -- priority = {
-        --   [""] = 110,
-        --   lua = 210,
-        -- },
-        -- highlight = {
-        --   "RainbowDelimiterRed",
-        --   "RainbowDelimiterYellow",
-        --   "RainbowDelimiterBlue",
-        --   "RainbowDelimiterOrange",
-        --   "RainbowDelimiterGreen",
-        --   "RainbowDelimiterViolet",
-        --   "RainbowDelimiterCyan",
-        -- },
+        blacklist = {},
+        strategy = {
+          [""] = require("rainbow-delimiters").strategy["global"],
+          vim = require("rainbow-delimiters").strategy["local"],
+        },
+        query = {
+          [""] = "rainbow-delimiters",
+          lua = "rainbow-blocks",
+        },
+        priority = {
+          [""] = 110,
+          lua = 210,
+        },
+        highlight = {
+          "RainbowDelimiterRed",
+          "RainbowDelimiterYellow",
+          "RainbowDelimiterBlue",
+          "RainbowDelimiterOrange",
+          "RainbowDelimiterGreen",
+          "RainbowDelimiterViolet",
+          "RainbowDelimiterCyan",
+        },
       }
     end,
   },
@@ -2522,6 +2524,43 @@ return {
           }
         end,
       },
+      -- LSP
+      {
+        "go",
+        function()
+          Snacks.picker.lsp_definitions()
+        end,
+        desc = "Goto Definition",
+      },
+      {
+        "gR",
+        function()
+          Snacks.picker.lsp_references()
+        end,
+        nowait = true,
+        desc = "References",
+      },
+      {
+        "gI",
+        function()
+          Snacks.picker.lsp_implementations()
+        end,
+        desc = "Goto Implementation",
+      },
+      {
+        "gy",
+        function()
+          Snacks.picker.lsp_type_definitions()
+        end,
+        desc = "Goto T[y]pe Definition",
+      },
+      {
+        "<leader>ss",
+        function()
+          Snacks.picker.lsp_symbols()
+        end,
+        desc = "LSP Symbols",
+      },
     },
     -- init = function()
     --   vim.api.nvim_create_autocmd("User", {
@@ -2770,6 +2809,7 @@ return {
     config = function()
       require("mini.align").setup {}
       -- require("mini.icon").setup {}
+      require("mini.sessions").setup {}
     end,
   },
 

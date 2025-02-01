@@ -23,6 +23,7 @@ map(
 )
 map("n", "<leader>te", ":Telescope <CR>", { desc = "Open Telescope" })
 map("n", "<leader>fl", ":FzfLua <CR>", { desc = "Open fzf-lua commands list" })
+map("n", "<leader>fd", ":FzfLua files <CR>", { desc = "Open fzf-lua to find files" })
 map("n", "<leader>fv", ":FzfLua live_grep_native <CR>", { desc = "Grep by fzf-lua live grep native" })
 map("n", "<leader>fe", ":Telescope egrepify <CR>", { desc = "Grep by telescope egrepify extension" })
 map(
@@ -131,3 +132,8 @@ map("n", "<leader>ll", ":Legendary<CR>", { desc = "Show avaiable keymaps by Lege
 
 -- Github copilot
 map("n", "<leader>co", ":Copilot<CR>", { desc = "Use Github Copilot" })
+map("n", "<leader>cl", ":CopilotChat<CR>", { desc = "Open Github CopilotChat" })
+
+-- Snacks
+map("n", "<leader>Sp", ":lua Snacks.picker() <CR>", { desc = "Open Snacks Picker" })
+map("n", "<leader>Sf", ":lua Snacks.picker.files() <CR>", { desc = "Open Snacks to find file" })

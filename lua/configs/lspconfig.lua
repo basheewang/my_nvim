@@ -9,6 +9,7 @@ local servers = {
   "cssls",
   "rust_analyzer",
   "texlab",
+  "pyright",
   -- "pyright", "clangd", "cmake",
   "taplo",
   "yamlls",

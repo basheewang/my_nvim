@@ -243,6 +243,10 @@ ls.add_snippets("all", {
   key = "all",
 })
 
+ls.add_snippets("cpp", {
+  s("sc", t "std::cout << "),
+})
+
 ls.add_snippets("tex", {
   -- rec_ls is self-referencing. That makes this snippet 'infinite' eg. have as many
   -- \item as necessary by utilizing a choiceNode.
