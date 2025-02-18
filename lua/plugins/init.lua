@@ -2401,14 +2401,16 @@ return {
       -- gitbrowse = { enabled = true },
       lazygit = { enabled = false },
       -- notify = { enabled = true },
+      picker = {},
+      explorer = {},
       -- rename = { enabled = true },
       -- terminal = { enabled = true },
       -- toggle = { enabled = true },
       -- win = { enabled = true },
-      notifier = {
-        enabled = false,
-        timeout = 3000,
-      },
+      -- notifier = {
+      --   enabled = false,
+      --   timeout = 3000,
+      -- },
       quickfile = { enabled = true },
       statuscolumn = { enabled = true },
       words = { enabled = true },
@@ -2418,94 +2420,22 @@ return {
         },
       },
     },
+    -- stylua: ignore
     keys = {
-      -- {
-      --   "<leader>un",
-      --   function()
-      --     Snacks.notifier.hide()
-      --   end,
-      --   desc = "Dismiss All Notifications",
-      -- },
-      {
-        "<leader>bd",
-        function()
-          Snacks.bufdelete()
-        end,
-        desc = "Delete Buffer",
-      },
-      -- {
-      --   "<leader>gg",
-      --   function()
-      --     Snacks.lazygit()
-      --   end,
-      --   desc = "Lazygit",
-      -- },
-      -- {
-      --   "<leader>gb",
-      --   function()
-      --     Snacks.git.blame_line()
-      --   end,
-      --   desc = "Git Blame Line",
-      -- },
-      -- {
-      --   "<leader>gB",
-      --   function()
-      --     Snacks.gitbrowse()
-      --   end,
-      --   desc = "Git Browse",
-      -- },
-      -- {
-      --   "<leader>gf",
-      --   function()
-      --     Snacks.lazygit.log_file()
-      --   end,
-      --   desc = "Lazygit Current File History",
-      -- },
-      -- {
-      --   "<leader>gl",
-      --   function()
-      --     Snacks.lazygit.log()
-      --   end,
-      --   desc = "Lazygit Log (cwd)",
-      -- },
-      {
-        "<leader>cR",
-        function()
-          local Snacks = require "snacks"
-          Snacks.rename.rename_file()
-        end,
-        desc = "Rename File",
-      },
-      -- {
-      --   "<c-/>",
-      --   function()
-      --     Snacks.terminal()
-      --   end,
-      --   desc = "Toggle Terminal",
-      -- },
-      -- {
-      --   "<c-_>",
-      --   function()
-      --     Snacks.terminal()
-      --   end,
-      --   desc = "which_key_ignore",
-      -- },
-      -- {
-      --   "]]",
-      --   function()
-      --     Snacks.words.jump(vim.v.count1)
-      --   end,
-      --   desc = "Next Reference",
-      --   mode = { "n", "t" },
-      -- },
-      -- {
-      --   "[[",
-      --   function()
-      --     Snacks.words.jump(-vim.v.count1)
-      --   end,
-      --   desc = "Prev Reference",
-      --   mode = { "n", "t" },
-      -- },
+      -- Pickers
+      {"<leader>:", function() Snacks.picker.command_history() end, desc="Command History"},
+      {"<leader><space>", function() Snacks.picker.smart() end, desc="Smart find files"},
+      {"<leader>e", function() Snacks.explorer() end, desc="File explorer"},
+      {"<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer"},
+      {"<leader>cR", function() Snacks.rename.rename_file() end, desc = "Rename File"},
+      {"]]", function() Snacks.words.jump(vim.v.count1) end, desc = "Next Reference", mode = { "n", "t" }},
+      {"[[", function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference", mode = { "n", "t" }},
+      -- LSP
+      {"go", function() Snacks.picker.lsp_definitions() end, desc = "Goto Definition"},
+      {"gR", function() Snacks.picker.lsp_references() end, nowait = true, desc = "References"},
+      {"gI", function() Snacks.picker.lsp_implementations() end, desc = "Goto Implementation"},
+      {"gy", function() Snacks.picker.lsp_type_definitions() end, desc = "Goto T[y]pe Definition"},
+      {"<leader>ss", function() Snacks.picker.lsp_symbols() end, desc = "LSP Symbols"},
       {
         "<leader>N",
         desc = "Neovim News",
@@ -2523,43 +2453,6 @@ return {
             },
           }
         end,
-      },
-      -- LSP
-      {
-        "go",
-        function()
-          Snacks.picker.lsp_definitions()
-        end,
-        desc = "Goto Definition",
-      },
-      {
-        "gR",
-        function()
-          Snacks.picker.lsp_references()
-        end,
-        nowait = true,
-        desc = "References",
-      },
-      {
-        "gI",
-        function()
-          Snacks.picker.lsp_implementations()
-        end,
-        desc = "Goto Implementation",
-      },
-      {
-        "gy",
-        function()
-          Snacks.picker.lsp_type_definitions()
-        end,
-        desc = "Goto T[y]pe Definition",
-      },
-      {
-        "<leader>ss",
-        function()
-          Snacks.picker.lsp_symbols()
-        end,
-        desc = "LSP Symbols",
       },
     },
     -- init = function()
@@ -2798,6 +2691,18 @@ return {
         ft = { "markdown", "Avante" },
       },
     },
+  },
+
+  -- 72. cross platform image viewer for neovim
+  {
+    "skardyy/neo-img",
+    event = "VeryLazy",
+    build = function()
+      require("neo-img").install()
+    end,
+    config = function()
+      require("neo-img").setup()
+    end,
   },
 
   -- Backup plugins

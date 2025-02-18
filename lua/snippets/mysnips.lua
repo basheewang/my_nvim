@@ -244,7 +244,17 @@ ls.add_snippets("all", {
 })
 
 ls.add_snippets("cpp", {
-  s("sc", t "std::cout << "),
+  s(
+    "sc",
+    fmt(
+      [[
+      std::cout << {} << '\n';
+      ]],
+      {
+        i(1, ""),
+      }
+    )
+  ),
 })
 
 ls.add_snippets("tex", {
